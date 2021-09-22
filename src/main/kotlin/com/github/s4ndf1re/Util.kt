@@ -14,8 +14,8 @@ class Util {
             }
 
             for (msg in messages) {
-                if (mostCritical.priority < msg.level.priority) {
-                    mostCritical = msg.level
+                if (mostCritical.priority < msg.messageConfig.logLevel.priority) {
+                    mostCritical = msg.messageConfig.logLevel
                 }
             }
 

@@ -19,7 +19,11 @@ class ChildLogger(
 
     private fun addMessage(logLevel: LogLevel, msg: String, line: Int? = null, file: String? = null) {
         if (logLevel.priority >= this.logLevel.priority) {
-            this.messages.add(Message(logLevel, msg, line, file))
+            val config = MessageConfig(logLevel)
+            config.message = msg
+            config.line = line
+            config.file = file
+            this.messages.add(Message(config))
         }
     }
 
