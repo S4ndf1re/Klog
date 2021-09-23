@@ -3,6 +3,7 @@ package com.github.s4ndf1re
 import kotlinx.serialization.Serializable
 
 @Serializable
+@Suppress("unused")
 class DummyLogger(override val description: String, override val logLevel: LogLevel) : ILogger {
     override var mostCritical: LogLevel = LogLevel.SUCCESS
 

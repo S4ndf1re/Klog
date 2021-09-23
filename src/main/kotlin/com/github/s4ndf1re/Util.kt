@@ -25,15 +25,15 @@ class Util {
         }
 
 
-        private fun addStackLevelOffset(hirachyLevel: Int): Int {
-            return hirachyLevel + THREAD_STACKTRACE_OFFSET
+        private fun addStackLevelOffset(hierarchyLevel: Int): Int {
+            return hierarchyLevel + THREAD_STACKTRACE_OFFSET
         }
 
 
-        fun getLineAndFile(hirachyLevel: Int): Pair<Int, String?> {
+        fun getLineAndFile(hierarchyLevel: Int): Pair<Int, String?> {
             val stackTrace = Thread.currentThread().stackTrace
-            val line = stackTrace[addStackLevelOffset(hirachyLevel)].lineNumber
-            val fileName = stackTrace[addStackLevelOffset(hirachyLevel)].fileName
+            val line = stackTrace[addStackLevelOffset(hierarchyLevel)].lineNumber
+            val fileName = stackTrace[addStackLevelOffset(hierarchyLevel)].fileName
             return Pair(line, fileName)
         }
 
