@@ -1,15 +1,18 @@
 package com.github.s4ndf1re
 
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import tornadofx.App
+import java.io.FileReader
 import java.io.FileWriter
 
 @Serializable
 class Logger(
     override val description: String,
     override val logLevel: LogLevel
-) : ILogger {
+) : ILogger, App(LoggerView::class) {
 
     override var mostCritical: LogLevel = LogLevel.SUCCESS
     private val children: ArrayList<ChildLogger> = arrayListOf()
@@ -20,35 +23,38 @@ class Logger(
         return this.children.last()
     }
 
-    private fun addMessage(logLevel: LogLevel, msg: String, line: Int? = null, file: String? = null) {
+    private fun addMessage(logLevel: LogLevel, functor: MessageConfig.() -> String) {
         if (logLevel.priority >= this.logLevel.priority) {
             val config = MessageConfig(logLevel)
-            config.message = msg
-            config.line = line
-            config.file = file
+            config.message = config.functor()
+            if (config.withLineAndFile) {
+                val (line, file) = Util.getLineAndFile(2)
+                config.file = file
+                config.line = line
+            }
             this.messages.add(Message(config))
         }
     }
 
     // TODO (Jan): Implement MessageConfig class and use as instance for parameters
-    override fun debug(debug: () -> String) {
-        this.addMessage(LogLevel.DEBUG, debug())
+    override fun debug(debug: MessageConfig.() -> String) {
+        this.addMessage(LogLevel.DEBUG, debug)
     }
 
-    override fun info(info: () -> String) {
-        this.addMessage(LogLevel.INFO, info())
+    override fun info(info: MessageConfig.() -> String) {
+        this.addMessage(LogLevel.INFO, info)
     }
 
-    override fun warning(warning: () -> String) {
-        this.addMessage(LogLevel.WARNING, warning())
+    override fun warning(warning: MessageConfig.() -> String) {
+        this.addMessage(LogLevel.WARNING, warning)
     }
 
-    override fun error(error: () -> String) {
-        this.addMessage(LogLevel.ERROR, error())
+    override fun error(error: MessageConfig.() -> String) {
+        this.addMessage(LogLevel.ERROR, error)
     }
 
-    override fun critical(critical: () -> String) {
-        this.addMessage(LogLevel.CRITICAL, critical())
+    override fun critical(critical: MessageConfig.() -> String) {
+        this.addMessage(LogLevel.CRITICAL, critical)
     }
 
     override fun evaluateMostCritical(): LogLevel {
@@ -56,8 +62,16 @@ class Logger(
         return this.mostCritical
     }
 
+    override fun getChildren(): List<ILogger> {
+        return this.children
+    }
+
+    override fun getMessages(): List<Message> {
+        return this.messages
+    }
+
     fun save(path: String) {
-        try {
+        kotlin.runCatching {
             evaluateMostCritical()
             val serialized = Json {
                 prettyPrint = true
@@ -66,8 +80,17 @@ class Logger(
             FileWriter(path).use {
                 it.write(serialized)
             }
-        } catch (exc: Exception) {
-            println(exc)
+        }.onFailure { println(it) }
+    }
+
+    companion object Loader {
+        fun load(path: String): Logger? {
+            return kotlin.runCatching {
+                Json {
+                    prettyPrint = true
+                    encodeDefaults = true
+                }.decodeFromString<Logger>(FileReader(path).readText())
+            }.getOrNull()
         }
     }
 }

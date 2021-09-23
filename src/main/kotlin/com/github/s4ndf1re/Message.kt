@@ -6,7 +6,7 @@ import java.util.*
 
 @Serializable
 class Message(val messageConfig: MessageConfig) {
-    private val timestamp: String
+    val timestamp: String
 
     init {
         val dateFormat = SimpleDateFormat("dd.MM.yyyy HH:mm:ss")

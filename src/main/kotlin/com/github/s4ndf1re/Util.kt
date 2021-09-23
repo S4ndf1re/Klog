@@ -1,5 +1,7 @@
 package com.github.s4ndf1re
 
+const val THREAD_STACKTRACE_OFFSET = 2
+
 class Util {
     companion object Static {
 
@@ -22,8 +24,44 @@ class Util {
             return mostCritical
         }
 
-        fun fromException(exception: Exception): String {
-            return "${exception.message} | ${exception.stackTrace[0]}"
+
+        private fun addStackLevelOffset(hirachyLevel: Int): Int {
+            return hirachyLevel + THREAD_STACKTRACE_OFFSET
+        }
+
+
+        fun getLineAndFile(hirachyLevel: Int): Pair<Int, String?> {
+            val stackTrace = Thread.currentThread().stackTrace
+            val line = stackTrace[addStackLevelOffset(hirachyLevel)].lineNumber
+            val fileName = stackTrace[addStackLevelOffset(hirachyLevel)].fileName
+            return Pair(line, fileName)
+        }
+
+        private fun parseMessageToIntermediateMessage(message: Message): IntermediateMessage {
+            val config = message.messageConfig
+            return IntermediateMessage(
+                config.logLevel,
+                config.message,
+                message.timestamp,
+                config.line?.toString() ?: "",
+                config.file.orEmpty(),
+                emptyList()
+            )
+        }
+
+        fun parseLoggerToIntermediateMessage(logger: ILogger): IntermediateMessage {
+            val messageChildren: MutableList<IntermediateMessage> = mutableListOf()
+            val children = logger.getChildren()
+            for (child in children) {
+                messageChildren.add(parseLoggerToIntermediateMessage(child))
+            }
+
+            val messages = logger.getMessages()
+            for (msg in messages) {
+                messageChildren.add(parseMessageToIntermediateMessage(msg))
+            }
+
+            return IntermediateMessage(logger.mostCritical, logger.description, "", "", "", messageChildren)
         }
 
     }

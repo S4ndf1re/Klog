@@ -7,15 +7,19 @@ interface ILogger {
 
     fun createNode(description: String): ILogger
 
-    fun debug(debug: () -> String)
+    fun debug(debug: MessageConfig.() -> String)
 
-    fun info(info: () -> String)
+    fun info(info: MessageConfig.() -> String)
 
-    fun warning(warning: () -> String)
+    fun warning(warning: MessageConfig.() -> String)
 
-    fun error(error: () -> String)
+    fun error(error: MessageConfig.() -> String)
 
-    fun critical(critical: () -> String)
+    fun critical(critical: MessageConfig.() -> String)
 
     fun evaluateMostCritical(): LogLevel
+
+    fun getChildren(): List<ILogger>
+
+    fun getMessages(): List<Message>
 }
