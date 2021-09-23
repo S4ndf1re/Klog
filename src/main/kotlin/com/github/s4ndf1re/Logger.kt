@@ -86,10 +86,12 @@ class Logger(
     companion object Loader {
         fun load(path: String): Logger? {
             return kotlin.runCatching {
-                Json {
-                    prettyPrint = true
-                    encodeDefaults = true
-                }.decodeFromString<Logger>(FileReader(path).readText())
+                FileReader(path).use {
+                    Json {
+                        prettyPrint = true
+                        encodeDefaults = true
+                    }.decodeFromString<Logger>(it.readText())
+                }
             }.getOrNull()
         }
     }
