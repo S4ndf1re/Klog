@@ -70,8 +70,8 @@ class Test {
         logger.evaluateMostCritical()
         assert(logger.mostCritical == LogLevel.ERROR)
 
-        logger.save("log2.json")
-        //launch<LoggerApp>()
+        logger.save("log.json")
+        //logger.show()
     }
 
 }
