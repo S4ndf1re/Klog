@@ -29,6 +29,15 @@ dependencies {
     testImplementation 'org.jetbrains.kotlin:kotlin-test-junit:1.5.31'
 }
 
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+}
+
+
 compileKotlin {
     kotlinOptions.jvmTarget = "11"
 }
