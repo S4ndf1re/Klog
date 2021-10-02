@@ -1,11 +1,13 @@
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.5.21'
+    id 'org.jetbrains.kotlin.jvm' version '1.5.31'
     id 'java-library'
-    id 'org.jetbrains.kotlin.plugin.serialization' version '1.5.21'
+    id 'org.jetbrains.kotlin.plugin.serialization' version '1.5.31'
     id 'org.openjfx.javafxplugin' version '0.0.8'
 }
 
-group 'com.github.s4ndf1re'
+apply plugin: 'maven-publish'
+
+group 'com.github.S4ndf1re'
 version '1.0'
 
 repositories {
@@ -18,13 +20,13 @@ javafx {
 }
 
 dependencies {
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.5.21'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.5.31'
     implementation platform('org.jetbrains.kotlin:kotlin-bom')
-    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.0-RC'
+    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.0'
     implementation 'no.tornado:tornadofx:1.7.20'
 
-    testImplementation 'org.jetbrains.kotlin:kotlin-test:1.5.21'
-    testImplementation 'org.jetbrains.kotlin:kotlin-test-junit:1.5.21'
+    testImplementation 'org.jetbrains.kotlin:kotlin-test:1.5.31'
+    testImplementation 'org.jetbrains.kotlin:kotlin-test-junit:1.5.31'
 }
 
 compileKotlin {
