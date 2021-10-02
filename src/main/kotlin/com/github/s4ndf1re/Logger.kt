@@ -4,7 +4,6 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import tornadofx.App
 import java.io.FileReader
 import java.io.FileWriter
 
@@ -12,7 +11,7 @@ import java.io.FileWriter
 class Logger(
     override val description: String,
     override val logLevel: LogLevel
-) : ILogger, App(LoggerView::class) {
+) : ILogger {
 
     override var mostCritical: LogLevel = LogLevel.SUCCESS
     private val children: ArrayList<ChildLogger> = arrayListOf()
