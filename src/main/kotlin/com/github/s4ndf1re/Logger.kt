@@ -4,6 +4,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import tornadofx.launch
 import java.io.FileReader
 import java.io.FileWriter
 
@@ -80,6 +81,11 @@ class Logger(
                 it.write(serialized)
             }
         }.onFailure { println(it) }
+    }
+
+    fun show() {
+        this.save("log.json")
+        launch<LoggerApp>()
     }
 
     companion object Loader {
